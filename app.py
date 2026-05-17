@@ -1,6 +1,15 @@
 import os
+# Minimize TensorFlow memory overhead on free tier
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 from flask import Flask, request, jsonify, render_template
 import tensorflow as tf
+
+# Restrict TensorFlow to a single thread to prevent CPU spike & OOM on Render
+tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
+
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import numpy as np
