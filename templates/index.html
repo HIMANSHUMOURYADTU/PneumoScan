@@ -933,6 +933,21 @@
 
     try {
       const res = await fetch('/predict', { method: 'POST', body: formData });
+
+      // Guard: if server returned a non-JSON error page (e.g. 502 gateway), surface a clear message
+      if (!res.ok) {
+        let msg = `Server error ${res.status}`;
+        // Try to get JSON error body if available
+        try {
+          const errData = await res.json();
+          if (errData && errData.error) msg = errData.error;
+        } catch (_) {
+          // Response was not JSON (e.g. Render's HTML 502 page) — use status text
+          msg = `Server error ${res.status}: ${res.statusText || 'The server is unavailable. It may be starting up — please try again in a moment.'}`;
+        }
+        throw new Error(msg);
+      }
+
       const data = await res.json();
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
 
