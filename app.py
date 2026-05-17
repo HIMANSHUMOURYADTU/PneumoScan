@@ -15,8 +15,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Configuration for allowed file extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Load the custom DenseNet121 model
-MODEL_PATH = 'pneumonia_classifier.h5'
+MODEL_PATH = os.path.join(BASE_DIR, 'pneumonia_classifier.h5')
 model = None
 
 try:
